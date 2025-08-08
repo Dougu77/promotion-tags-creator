@@ -1,3 +1,3 @@
 from scripts import image
 
-image.create_label('Teste', 10)
+image.create_label('TesteTesteTesteTesteTeste\nTeste', 10)
