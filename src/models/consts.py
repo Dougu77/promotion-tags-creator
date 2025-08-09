@@ -15,5 +15,6 @@ PROMOTION_FONT = ImageFont.truetype('arial.ttf', 80)
 PROMOTION_HEIGHT = LABEL_SIZE_PX[1] * 0.25
 
 TEMP_FOLDER = 'temp'
+PDF_FOLDER = 'pdf'
 
 MAX_PRODUCT_CHARACTERS = 25

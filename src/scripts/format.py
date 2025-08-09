@@ -7,3 +7,7 @@ def format_price(price:float) -> str:
 def format_image_file_name() -> str:
     files = os.listdir(TEMP_FOLDER)
     return f'{TEMP_FOLDER}/etiqueta_{len(files) + 1}.png'
+
+def format_pdf_file_name() -> str:
+    files = os.listdir(PDF_FOLDER)
+    return f'{PDF_FOLDER}/etiquetas_{len(files) + 1}.pdf'
