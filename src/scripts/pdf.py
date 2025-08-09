@@ -1,33 +1,34 @@
-#  # Cria PDF
-#     pdf = FPDF(orientation='P', unit='mm', format='A4')
-#     pdf.set_auto_page_break(0)
-#     pdf.add_page()
+from models.label import Label
+from models.consts import *
+from fpdf import FPDF
 
-#     # Espaçamento entre etiquetas
-#     margem_lateral = 10
-#     margem_superior = 10
-#     espacamento_h = 5
-#     espacamento_v = 5
+def create_pdf(labels:list[Label]) -> None:
 
-#     x = margem_lateral
-#     y = margem_superior
+    # Criação do PDF
+    pdf = FPDF()
+    pdf.set_auto_page_break(0)
+    pdf.add_page()
 
-#     for idx, path in enumerate(etiquetas):
-#         pdf.image(path, x=x, y=y, w=LABEL_WIDTH_MM, h=LABEL_HEIGHT_MM)
-#         os.remove(path)
+    # Definição dos posicionamentos
+    gap = 3
+    x = gap
+    y = gap
 
-#         x += LABEL_WIDTH_MM + espacamento_h
+    for label in labels:
+        pdf.image(label.path, x=x, y=y, w=LABEL_SIZE_MM[0], h=LABEL_SIZE_MM[1])
 
-#         # Se passar da largura da página, quebra linha
-#         if x + LABEL_WIDTH_MM > 210 - margem_lateral:
-#             x = margem_lateral
-#             y += LABEL_HEIGHT_MM + espacamento_v
-#             # Se passar da altura da página, nova página
-#             if y + LABEL_HEIGHT_MM > 297 - margem_superior:
-#                 pdf.add_page()
-#                 x = margem_lateral
-#                 y = margem_superior
+        x += LABEL_SIZE_MM[0] + gap
 
-#     output = "etiquetas_promocao.pdf"
-#     pdf.output(output)
-#     print(f"PDF '{output}' criado com sucesso!")
+        # Verificação para quebra de linha
+        if x + LABEL_SIZE_MM[0] > 210 - gap:
+            x = gap
+            y += LABEL_SIZE_MM[1] + gap
+
+            # Verificação para criação de mais uma página
+            if y + LABEL_SIZE_MM[1] > 297 - gap:
+                pdf.add_page()
+                x = gap
+                y = gap
+
+    output = 'etiquetas_promocao.pdf'
+    pdf.output(output)

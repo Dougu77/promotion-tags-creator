@@ -1,13 +1,18 @@
 from PIL import Image, ImageDraw
-from .consts import *
+from models.label import Label
+from models.consts import *
+from textwrap import wrap
 from .format import *
 
-def create_label(product:str, price:float) -> None:
+def create_label(product:str, price:float) -> Label:
     '''summary_ Gera a etiqueta de promoção
 
     Args:
         product (str): Nome do produto
         price (float): Preço do produto
+
+    Returns:
+        Label: Informações da etiqueta (Produto, Preço, Imagem)
     '''
 
     # Configurações iniciais pro pillow
@@ -29,18 +34,26 @@ def create_label(product:str, price:float) -> None:
     draw.text((x, y), PROMOTION_TEXT, font=PROMOTION_FONT, fill='white')
 
     # Nome do produto
-    bbox = draw.textbbox((0, 0), product, font=PRODUCT_FONT)
-    x = (LABEL_SIZE_PX[0] - (bbox[2] - bbox[0])) / 2
+    lines = wrap(product, MAX_PRODUCT_CHARACTERS)
     y = PROMOTION_HEIGHT + 20
-    draw.text((x, y), product, font=PRODUCT_FONT, fill='black')
 
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=PRODUCT_FONT)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        x = (LABEL_SIZE_PX[0] - text_width) / 2
+        draw.text((x, y), line, font=PRODUCT_FONT, fill='black')
+        y += text_height + 40
+    
     # Preço
     bbox = draw.textbbox((0, 0), format_price(price), PRICE_FONT)
     x = (LABEL_SIZE_PX[0] - (bbox[2] - bbox[0])) / 2
     y = LABEL_SIZE_PX[1] - (bbox[3] - bbox[1]) - 80
     draw.text((x, y), format_price(price), font=PRICE_FONT, fill='black')
 
-    # Salvamento da imagem
-    if not os.path.exists(TEMP_FOLDER):
-        os.makedirs(TEMP_FOLDER)
-    image.save(format_image_file_name())
+    # Retorno
+    return Label(product, price, image, format_image_file_name())
+
+def save_all_images(labels:list[Label]) -> None:
+    for label in labels:
+        label.image.save(label.path)

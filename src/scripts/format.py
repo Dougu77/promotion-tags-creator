@@ -1,4 +1,4 @@
-from .consts import *
+from models.consts import *
 import os
 
 def format_price(price:float) -> str:
