@@ -1,6 +1,7 @@
 from models.label import Label
 from models.consts import *
 from fpdf import FPDF
+from . import format
 
 def create_pdf(labels:list[Label]) -> None:
 
@@ -16,7 +17,6 @@ def create_pdf(labels:list[Label]) -> None:
 
     for label in labels:
         pdf.image(label.path, x=x, y=y, w=LABEL_SIZE_MM[0], h=LABEL_SIZE_MM[1])
-
         x += LABEL_SIZE_MM[0] + gap
 
         # Verificação para quebra de linha
@@ -30,5 +30,4 @@ def create_pdf(labels:list[Label]) -> None:
                 x = gap
                 y = gap
 
-    output = 'etiquetas_promocao.pdf'
-    pdf.output(output)
+    pdf.output(format.pdf_file_name())

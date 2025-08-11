@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 from models.label import Label
 from models.consts import *
 from textwrap import wrap
-from .format import *
+from . import format
 
 def create_label(product:str, price:float) -> Label:
     '''summary_ Gera a etiqueta de promoção
@@ -12,7 +12,7 @@ def create_label(product:str, price:float) -> Label:
         price (float): Preço do produto
 
     Returns:
-        Label: Informações da etiqueta (Produto, Preço, Imagem)
+        Label: Informações da etiqueta (Produto, Preço, Imagem, Caminho do Arquivo)
     '''
 
     # Configurações iniciais pro pillow
@@ -46,14 +46,20 @@ def create_label(product:str, price:float) -> Label:
         y += text_height + 40
     
     # Preço
-    bbox = draw.textbbox((0, 0), format_price(price), PRICE_FONT)
+    bbox = draw.textbbox((0, 0), price(price), PRICE_FONT)
     x = (LABEL_SIZE_PX[0] - (bbox[2] - bbox[0])) / 2
     y = LABEL_SIZE_PX[1] - (bbox[3] - bbox[1]) - 80
-    draw.text((x, y), format_price(price), font=PRICE_FONT, fill='black')
+    draw.text((x, y), price(price), font=PRICE_FONT, fill='black')
 
     # Retorno
-    return Label(product, price, image, format_image_file_name())
+    return Label(product, price, image, format.image_file_name())
 
 def save_all_images(labels:list[Label]) -> None:
+    '''summary_ Salva todas as imagens na pasta temporária
+
+    Args:
+        labels (list[Label]): Lista de etiquetas
+    '''
+
     for label in labels:
         label.image.save(label.path)

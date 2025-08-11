@@ -1,13 +1,16 @@
-from models.consts import *
+from models.enums import FileData
 import os
 
-def format_price(price:float) -> str:
+def price(price:float) -> str:
     return f'R$ {price:6.2f}'.replace('.', ',')
 
-def format_image_file_name() -> str:
-    files = os.listdir(TEMP_FOLDER)
-    return f'{TEMP_FOLDER}/etiqueta_{len(files) + 1}.png'
+def format_file_name(folder:FileData, format:FileData) -> str:
+    files = os.listdir(folder)
+    plural = '' if format == FileData.IMAGE_FORMAT else 's'
+    return f'{folder}/etiqueta{plural}_{len(files) + 1}.{format}'
 
-def format_pdf_file_name() -> str:
-    files = os.listdir(PDF_FOLDER)
-    return f'{PDF_FOLDER}/etiquetas_{len(files) + 1}.pdf'
+def image_file_name() -> str:
+    return format_file_name(FileData.TEMP_FOLDER, FileData.IMAGE_FORMAT)
+
+def pdf_file_name() -> str:
+    return format_file_name(FileData.PDF_FOLDER_AND_FORMAT, FileData.PDF_FOLDER_AND_FORMAT)
